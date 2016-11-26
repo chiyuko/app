@@ -22,7 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DisplayVideos"></activity>
+        <activity android:name=".DisplayVideos" />
+        <activity android:name=".RegisterPage"></activity>
     </application>
 
 </manifest>
