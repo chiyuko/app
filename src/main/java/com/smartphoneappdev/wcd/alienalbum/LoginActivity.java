@@ -74,6 +74,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -84,6 +85,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        // Reset user variables
         // Reset user variables
         ((AlienAlbum) getApplicationContext()).intUserID = 0;
         ((AlienAlbum) getApplicationContext()).strUserName = "";
@@ -110,6 +112,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+        Button btnRegisterPage = (Button) findViewById(R.id.goto_register_button);
+        btnRegisterPage.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, RegisterPage.class);
+                LoginActivity.this.startActivity(intent);
+
             }
         });
 
@@ -375,20 +386,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         + "?email=" + Uri.encode(mEmail, "UTF-8")
                         + "&password=" + Uri.encode(mPassword, "UTF-8");
 
-                /*
-                String data  = URLEncoder.encode("email", "UTF-8") + "=" +
-                        URLEncoder.encode(mEmail, "UTF-8");
-                data += "&" + URLEncoder.encode("password", "UTF-8") + "=" +
-                        URLEncoder.encode(mPassword, "UTF-8");
-                */
-
                 URL url = new URL(link);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setInstanceFollowRedirects(true);
                 conn.setRequestMethod("GET");
                 conn.connect();
-                InputStream is = conn.getInputStream();
-                String parsedString = convertInputStreamToString(is);
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(
+                        conn.getInputStream(), "UTF-8"));
+                String parsedString = reader.readLine();
 
                 JSONObject obj = new JSONObject(parsedString);
 
@@ -406,28 +412,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             } catch (Exception e) {
                 return false;
-                //return new String("Exception: " + e.getMessage());
-            }
-        }
-
-        public String convertInputStreamToString(InputStream ists)
-                throws IOException {
-            if (ists != null) {
-                StringBuilder sb = new StringBuilder();
-                String line;
-
-                try {
-                    BufferedReader r1 = new BufferedReader(new InputStreamReader(
-                            ists, "UTF-8"));
-                    while ((line = r1.readLine()) != null) {
-                        sb.append(line).append("\n");
-                    }
-                } finally {
-                    ists.close();
-                }
-                return sb.toString();
-            } else {
-                return "";
             }
         }
 
